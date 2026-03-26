@@ -132,3 +132,37 @@ h1 {
     align-items: start;
   }
 }
+.result-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.result-value {
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.copy-btn {
+  border: 1px solid #2f4a00;
+  background: #101a00;
+  color: #c8ff4d;
+  border-radius: 8px;
+  padding: 0.35rem 0.55rem;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.copy-btn:hover {
+  border-color: #b7ff00;
+  box-shadow: 0 0 0 2px rgba(183, 255, 0, 0.15);
+}
+
+.copy-btn.copied {
+  background: #b7ff00;
+  color: #0a0a0a;
+  border-color: #b7ff00;
+  font-weight: 700;
+}

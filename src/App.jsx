@@ -29,11 +29,25 @@ function generatePermutations(value) {
 
 function App() {
   const [code, setCode] = useState('')
+  const [copiedKey, setCopiedKey] = useState('')
   const isValid = /^\d{4}$/.test(code)
+
   const permutations = useMemo(
     () => (isValid ? generatePermutations(code) : []),
     [code, isValid],
   )
+
+  async function handleCopy(value, key) {
+    try {
+      await navigator.clipboard.writeText(value)
+      setCopiedKey(key)
+      window.setTimeout(() => {
+        setCopiedKey((prev) => (prev === key ? '' : prev))
+      }, 1200)
+    } catch {
+      setCopiedKey('')
+    }
+  }
 
   return (
     <main className="app-shell">
@@ -72,11 +86,24 @@ function App() {
           <p className="empty">Waiting for a valid 4 digit code...</p>
         ) : (
           <ul className="results-grid">
-            {permutations.map((item, index) => (
-              <li key={`${item}-${index}`} className="result-item">
-                {item}
-              </li>
-            ))}
+            {permutations.map((item, index) => {
+              const key = `${item}-${index}`
+              const copied = copiedKey === key
+
+              return (
+                <li key={key} className="result-item">
+                  <span className="result-value">{item}</span>
+                  <button
+                    type="button"
+                    className={`copy-btn${copied ? ' copied' : ''}`}
+                    onClick={() => handleCopy(item, key)}
+                    aria-label={`Copy ${item}`}
+                  >
+                    {copied ? 'Copied ✓' : 'Copy'}
+                  </button>
+                </li>
+              )
+            })}
           </ul>
         )}
       </section>
