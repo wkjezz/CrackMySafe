@@ -29,7 +29,7 @@ function generatePermutations(value) {
 
 function App() {
   const [code, setCode] = useState('')
-  const [copiedKey, setCopiedKey] = useState('')
+  const [copiedMap, setCopiedMap] = useState({})
   const isValid = /^\d{4}$/.test(code)
 
   const permutations = useMemo(
@@ -40,12 +40,9 @@ function App() {
   async function handleCopy(value, key) {
     try {
       await navigator.clipboard.writeText(value)
-      setCopiedKey(key)
-      window.setTimeout(() => {
-        setCopiedKey((prev) => (prev === key ? '' : prev))
-      }, 1200)
+      setCopiedMap((prev) => ({ ...prev, [key]: true }))
     } catch {
-      setCopiedKey('')
+      // no-op
     }
   }
 
@@ -69,9 +66,11 @@ function App() {
           maxLength={4}
           placeholder="0000"
           value={code}
-          onChange={(event) =>
-            setCode(event.target.value.replace(/\D/g, '').slice(0, 4))
-          }
+          onChange={(event) => {
+            const next = event.target.value.replace(/\D/g, '').slice(0, 4)
+            setCode(next)
+            setCopiedMap({})
+          }}
         />
         <p className="helper">
           {isValid
@@ -88,7 +87,7 @@ function App() {
           <ul className="results-grid">
             {permutations.map((item, index) => {
               const key = `${item}-${index}`
-              const copied = copiedKey === key
+              const copied = Boolean(copiedMap[key])
 
               return (
                 <li key={key} className="result-item">
